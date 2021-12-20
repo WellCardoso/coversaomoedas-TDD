@@ -3,10 +3,9 @@ import { CurrenciesService, ExchangeService } from './exchange.service';
 import {BadRequestException} from "@nestjs/common";
 
 
-
 describe('ExchangeService', () => {
   let service: ExchangeService;
-  let currenciesService: ExchangeService;
+  let currenciesService: CurrenciesService;
 
   beforeEach(async () => {
     const  currenciesServiceMock =  {
@@ -20,6 +19,7 @@ describe('ExchangeService', () => {
     }).compile();
 
     service = module.get<ExchangeService>(ExchangeService);
+    currenciesService = module.get<CurrenciesService>(CurrenciesService);
  });
 
   it('should be defined', () => {
@@ -39,5 +39,10 @@ describe('ExchangeService', () => {
   it('should be called getCurrency twice', async () => {
     await service.convertAmount({ from: 'USD', to:'BRL', amount: 1 })
     await expect(currenciesService.getCurrency).toBeCalledTimes(2)
-  })
+  });
+
+  it('should be called getCurrency with correct params', async () => {
+      await service.convertAmount({ from: 'USD', to:'BRL', amount: 1 })
+      await expect(currenciesService.getCurrency).toBeCalledTimes(2)
+  });
 });
